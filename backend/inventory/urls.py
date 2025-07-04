@@ -1,4 +1,7 @@
 from django.urls import path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+# Importing views
 from .views import CustomerViews
 from .views import ProductViews
 from .views import OrderViews
@@ -6,9 +9,14 @@ from .views import AdminView
 from .views import CsrfView
 
 urlpatterns = [
+    
+    # Auth Routes
+    path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 
     # Customer End-points
     path('customer/', CustomerViews.get_customers, name='get_customers'),
+    path('customer/active/', CustomerViews.get_active_customers, name='get_active_customers'),
     path('customer/create/', CustomerViews.create_customer, name='create_customer'),
     path('customer/update/', CustomerViews.update_customer, name='update_customer'),
     path('customer/delete/', CustomerViews.delete_customer, name='delete_customer'),

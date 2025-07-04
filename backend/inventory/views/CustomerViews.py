@@ -30,6 +30,11 @@ def get_customers(request, id=None):
         customers = Customer.objects.all()
         serializer = CustomerSerializer(customers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+@api_view(['GET'])
+def get_active_customers(request):
+    active_count = Customer.objects.filter(isActive=True).count()
+    return Response(active_count, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
 def create_customer(request):

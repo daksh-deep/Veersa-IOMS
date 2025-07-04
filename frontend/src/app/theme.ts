@@ -41,6 +41,7 @@ export const tokens = (mode: "light" | "dark") => ({
           default: "#000000",
           paper: "#0a0a0a",
         },
+
       }
     : {
         grey: {

@@ -58,32 +58,32 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """
         Override default create method to:
-        - Create Order instance.
-        - Validate stock for each product.
-        - Reduce product stock accordingly.
-        - Create corresponding OrderItem entries.
-
-        Raises:
-            serializers.ValidationError if any product lacks sufficient stock.
+        - Validate stock for all products first.
+        - If all stock is sufficient, create the Order and OrderItems.
         """
         items_data = validated_data.pop('orderitem_set')
+
+        # First, check all products have sufficient stock
+        for item_data in items_data:
+            product = item_data['product']
+            quantity = item_data['quantity']
+            if product.stock_quantity < quantity:
+                raise serializers.ValidationError(
+                    {"detail": f"Not enough stock for product '{product.product_name}'"}
+                )
+
+        # Now create the Order, since validation passed
         order = Order.objects.create(**validated_data)
 
+        # Deduct stock and create OrderItems
         for item_data in items_data:
             product = item_data['product']
             quantity = item_data['quantity']
 
-            # Validate product stock
-            if product.stock_quantity < quantity:
-                raise serializers.ValidationError({
-                    'error': f"Not enough stock for product '{product.product_name}'"
-                })
-
-            # Deduct stock and save
             product.stock_quantity -= quantity
             product.save()
 
-            # Create the order item
             OrderItem.objects.create(order=order, product=product, quantity=quantity)
 
         return order
+
