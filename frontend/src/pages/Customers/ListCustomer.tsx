@@ -25,7 +25,7 @@ interface Customer {
 
 const ListCustomer = () => {
   const theme = useTheme();
-  const BASE_URL = "http://127.0.0.1:8000/api/";
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);

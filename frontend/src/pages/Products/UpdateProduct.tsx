@@ -20,7 +20,7 @@ interface Props {
   onClose: () => void;
 }
 
-const BASE_URL = "http://127.0.0.1:8000/api/";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const UpdateProduct = ({ id, onClose }: Props) => {
   const theme = useTheme();

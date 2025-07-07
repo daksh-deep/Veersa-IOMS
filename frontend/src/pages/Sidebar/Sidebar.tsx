@@ -2,8 +2,8 @@ import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import {
   Box,
-  Drawer,
   CssBaseline,
+  Drawer,
   Toolbar,
   List,
   Typography,
@@ -16,6 +16,8 @@ import {
   AppBar as MuiAppBar,
   type AppBarProps as MuiAppBarProps,
   ListSubheader,
+  Stack,
+  Avatar,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -29,11 +31,15 @@ import {
   AddBox as AddBoxIcon,
   PlaylistAdd as PlaylistAddIcon,
 } from '@mui/icons-material';
+
+import { useSelector } from 'react-redux';
+import { type RootState } from '../../app/store';
 import { Link } from 'react-router-dom';
 import ThemeToggle from '../../components/ThemeToggle';
 
 const drawerWidth = 240;
 
+// Styled Main content area
 const Main = styled('main', {
   shouldForwardProp: (prop) => prop !== 'open',
 })<{ open?: boolean }>(({ theme, open }) => ({
@@ -53,6 +59,7 @@ const Main = styled('main', {
   }),
 }));
 
+// Styled AppBar
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
@@ -75,6 +82,7 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+// Drawer Header
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
@@ -83,9 +91,12 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
+// Sidebar Component
 const Sidebar = ({ children }: { children: React.ReactNode }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
+
+  const username = useSelector((state: RootState) => state.admin.adminName);
 
   const handleDrawerOpen = () => setOpen(true);
   const handleDrawerClose = () => setOpen(false);
@@ -106,7 +117,9 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx = {{borderRadius:0, boxShadow:'none'}}>
+
+      {/* AppBar */}
+      <AppBar position="fixed" open={open} sx={{ borderRadius: 0, boxShadow: 'none' }}>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Box display="flex" alignItems="center">
             <IconButton
@@ -117,14 +130,21 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h4" noWrap fontWeight={600}>
-              Veersa IOMS
-            </Typography>
           </Box>
-          <ThemeToggle />
+
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Avatar >
+              {username?.charAt(0)?.toUpperCase() || 'A'}
+            </Avatar>
+            <Typography variant="h6" fontWeight={600}>
+              {username}
+            </Typography>
+            <ThemeToggle />
+          </Stack>
         </Toolbar>
       </AppBar>
 
+      {/* Sidebar Drawer */}
       <Drawer
         sx={{
           width: drawerWidth,
@@ -144,6 +164,14 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
           </IconButton>
         </DrawerHeader>
 
+        {/* App Branding */}
+        <Box px={2} py={1}>
+          <Typography variant="h3" fontWeight={700}>
+            Veersa IOMS
+          </Typography>
+        </Box>
+
+        {/* Navigation */}
         <List subheader={<ListSubheader>Navigation</ListSubheader>}>
           {primaryNav.map((item) => (
             <ListItem key={item.label} disablePadding>
@@ -157,6 +185,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
 
         <Divider />
 
+        {/* Quick Actions */}
         <List subheader={<ListSubheader>Quick Actions</ListSubheader>}>
           {creationActions.map((item) => (
             <ListItem key={item.label} disablePadding>
@@ -169,6 +198,7 @@ const Sidebar = ({ children }: { children: React.ReactNode }) => {
         </List>
       </Drawer>
 
+      {/* Main Content */}
       <Main open={open}>
         <DrawerHeader />
         {children}

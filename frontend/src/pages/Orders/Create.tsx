@@ -31,7 +31,7 @@ interface Props {
   onClose: () => void;
 }
 
-const BASE_URL = "http://127.0.0.1:8000/api/";
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const CreateOrder = ({ onClose }: Props) => {
   const theme = useTheme();
@@ -54,7 +54,7 @@ const CreateOrder = ({ onClose }: Props) => {
         ]);
 
         const activeCustomers = custRes.data.filter((cust: any) => cust.isActive);
-        const activeProducts = prodRes.data.filter((prod: any) => prod.isActive);
+        const activeProducts = prodRes.data.filter((prod: any) => (prod.isActive && prod.stock_quantity > 0));
         setCustomers(activeCustomers);
         setProducts(activeProducts);
       } catch (err) {

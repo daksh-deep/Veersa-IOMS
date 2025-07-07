@@ -45,7 +45,7 @@ interface Order {
 
 const ListOrder = () => {
   const theme = useTheme();
-  const BASE_URL = "http://127.0.0.1:8000/api/";
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
   const [orders, setOrders] = useState<Order[]>([]);
 
   const fetchOrders = async () => {

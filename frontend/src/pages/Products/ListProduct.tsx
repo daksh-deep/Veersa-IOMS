@@ -25,7 +25,7 @@ interface Product {
 
 const ListProduct = () => {
   const theme = useTheme();
-  const BASE_URL = "http://127.0.0.1:8000/api/";
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const [products, setProducts] = useState<Product[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);

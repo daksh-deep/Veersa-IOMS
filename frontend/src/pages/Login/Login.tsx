@@ -1,34 +1,32 @@
-// pages/Login.tsx
-import {
-  Box,
-  TextField,
-  Button,
-  Typography,
-  useTheme,
-  Stack,
-  Alert,
-  Divider,
-} from "@mui/material";
+import {Box, TextField, Button, Typography, useTheme, Stack, Alert, Divider} from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "../../api/auth";
+import { useDispatch } from "react-redux";
+import { setAdminName } from "../../features/admin/adminSlice";
 
 const Login = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [responseMsg, setResponseMsg] = useState("");
   const [isError, setIsError] = useState(false);
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const success = await loginUser(username, password);
     if (success) {
       setIsError(false);
-      setResponseMsg("✅ Login successful!");
+      setResponseMsg("Login successful!");
+      dispatch(setAdminName(username))
+
       setTimeout(() => navigate("/dashboard"), 1000);
+
     } else {
       setIsError(true);
       setResponseMsg("❌ Invalid username or password.");
